@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 from app.models import models, schemas
 from app.services.db_service import UserService, AccountService
 
