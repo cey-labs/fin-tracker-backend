@@ -31,6 +31,9 @@ class AccountService:
     def __init__(self):
         pass
 
+    def get_account(self, db: Session, account_id: int):
+        return db.query(models.Account).filter(models.Account.id == account_id).first()
+
     def get_accounts(self, db: Session, owner_id: int, skip: int = 0, limit: int = 100):
         return db.query(models.Account).filter(models.Account.owner_id == owner_id).offset(skip).limit(limit).all()
 
@@ -40,3 +43,22 @@ class AccountService:
         db.commit()
         db.refresh(db_account)
         return db_account
+
+
+class TransactionsService:
+    def __init__(self):
+        pass
+
+    def get_transaction(self, db: Session, transaction_id: int):
+        return db.query(models.Transaction).filter(models.Transaction.id == transaction_id).first()
+
+    def get_transactions(self, db: Session, account_id: int, skip: int = 0, limit: int = 100):
+        return (db.query(models.Transaction).filter(models.Transaction.account_id == account_id).offset(skip)
+                .limit(limit).all())
+
+    def create_transaction(self, db: Session, transaction: schemas.TransactionCreate, account_id: int):
+        db_transaction = models.Transaction(**transaction.dict(), account_id=account_id)
+        db.add(db_transaction)
+        db.commit()
+        db.refresh(db_transaction)
+        return db_transaction
